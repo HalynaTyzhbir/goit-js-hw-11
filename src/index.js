@@ -1,6 +1,8 @@
 import './sass/index.scss';
 import Notiflix from 'notiflix';
 import axios from "axios";
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 const refs = {
     form: document.querySelector('#search-form'),
@@ -31,13 +33,13 @@ const getPictures = async () => {
             };
             if (Response.data.hits.length !== 0 && currentPage === 1) {
                 Notiflix.Notify.success(`Hooray! We found ${Response.data.totalHits} images.`);
-            }; 
+            };
         }
     }
     catch (error) {
         console.log(error);
     }
-}
+};
 
 const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,10 +52,12 @@ const handleSubmit = (e) => {
         currentPage += 1;
     }
     getPictures();
-}
+};
 
 const createPictureCard = (card) => `<div class="photo-card">
-<img src = "${card.webformatURL}" alt = "${card.tags}" loading="lazy">
+<a class="gallery__item" href="${card.largeImageURL}">
+<img class="gallery__image" src = "${card.webformatURL}" alt = "${card.tags}" loading="lazy">
+</a>
 <div class="info">
 <p class="info-item">likes<b> ${card.likes}</b></p>
 <p class="info-item">views<b> ${card.views}</b></p>
@@ -64,10 +68,14 @@ const createPictureCard = (card) => `<div class="photo-card">
 
 const generateContent = (array) => array.reduce((acc, card) => acc + createPictureCard(card), "");
 
+const lightboxGallery = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: '250' });
+
 const insertContent = (array) => {
     const result = generateContent(array);
     refs.gallery.insertAdjacentHTML("beforeend", result);
+    lightboxGallery.refresh();
 };
 
 refs.form.addEventListener("submit", handleSubmit);
 refs.loadMoreBtn.addEventListener("click", handleSubmit);
+

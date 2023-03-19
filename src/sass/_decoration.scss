@@ -40,10 +40,15 @@
   transition: background-color linear 300ms;
 }
 
-img {
+.gallery__image {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+.gallery__item {
+  width: 100%;
+  height: 100%;
 }
 
 .info-item {
